@@ -9,6 +9,7 @@
   "author": "Harris Scott",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/opus": "github:discordjs/opus",
     "discord.js": "^12.3.1",
     "opusscript": "0.0.7",
     "utf-8-validate": "^5.0.2"

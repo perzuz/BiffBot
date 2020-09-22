@@ -6,9 +6,7 @@ var isReady = true
 
 function getRandomVoiceLine()
 {
-  // get a list of all the mp3s in resources
   var files = fs.readdirSync('resources')
-  // choose a random file from the list
   return 'resources/' + files[Math.floor(Math.random() * files.length)] 
 }
 
@@ -48,6 +46,5 @@ client.on('message', message => {
 	isReady = true
 })
 
-// needs to be last line apparently
 var config = require('./config.json')
 client.login(config.token)

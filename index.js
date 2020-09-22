@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 var fs = require('fs');
 
-var isReady = true;
+var isReady = true
 
 function getRandomVoiceLine()
 {
@@ -13,30 +13,41 @@ function getRandomVoiceLine()
 }
 
 client.once('ready', () => {
-    console.log('Hello Mcfly, Anybody Home!?');
-});
+	console.log('Hello Mcfly, Anybody Home!?')
+})
 
 const prefix = '-'
 
+const dispatcher_on_start = () => {
+    console.log('audio.mp3 is now playing!');
+}
+
+const dispatcher_on_finish = (vc) => {
+    console.log('audio.mp3 has finished playing! Disconnecting from voice channel');
+    vc.leave();
+}
+
 client.on('message', message => {
-    if (!message.content.startsWith(prefix) || message.author.bot || !isReady) return;
+	if (!message.content.startsWith(prefix) || message.author.bot || !isReady)
+		return
 
-    isReady = false;
+	isReady = false
+    file = getRandomVoiceLine();
+	var voiceChannel = message.member.voice.channel
+	voiceChannel
+		.join()
+		.then(connection => {   
+			const dispatcher = connection.play(file, {
+				volume: 0.9,
+			})
+			dispatcher.on('start', dispatcher_on_start);
 
-    var voiceChannel = message.member.voice.channel;
-    voiceChannel.join().then(connection => {
-
-        file = getRandomVoiceLine();
-        const dispatcher = connection.play(file, { volume: 0.9 });
-
-        dispatcher.on("finish", end => {
-            voiceChannel.leave();
-        });
-
-    }).catch(err => console.log(err));
-    isReady = true;
-
-});
+			dispatcher.on("finish", () => dispatcher_on_finish(voiceChannel));
+		})
+		.catch(err => console.log(err))
+	isReady = true
+})
 
 // needs to be last line apparently
-client.login('NzU3NjQ0Njc3ODMzOTQ5MjQ0.X2jZlw.n_cdwC3UfF0fRyYgke0vvYqTXUU');
+var config = require('./config.json')
+client.login(config.token)

@@ -10,14 +10,14 @@ client.once('ready', () => {
 
 const prefix = '-'
 
-// const dispatcher_on_start = () => {
-//     console.log('audio.mp3 is now playing!');
-// }
+const dispatcher_on_start = () => {
+    console.log('audio.mp3 is now playing!');
+}
 
-// const dispatcher_on_finish = (voiceChannel) => {
-//     console.log('audio.mp3 has finished playing! Disconnecting from voice channel');
-//     voiceChannel.leave();
-// }
+const dispatcher_on_finish = (vc) => {
+    console.log('audio.mp3 has finished playing! Disconnecting from voice channel');
+    vc.leave();
+}
 
 client.on('message', message => {
 	if (!message.content.startsWith(prefix) || message.author.bot || !isReady)
@@ -28,19 +28,13 @@ client.on('message', message => {
 	var voiceChannel = message.member.voice.channel
 	voiceChannel
 		.join()
-		.then(connection => {
+		.then(connection => {   
 			const dispatcher = connection.play('resources/Butthead.mp3', {
 				volume: 0.9,
 			})
-			dispatcher.on('start', () => {
-				console.log('audio.mp3 is now playing!')
-			})
-			dispatcher.on('finish', () => {
-				voiceChannel.leave()
-			})
-			//dispatcher.on('start', dispatcher_on_start);
+			dispatcher.on('start', dispatcher_on_start);
 
-			//dispatcher.on("finish", dispatcher_on_finish);
+			dispatcher.on("finish", () => dispatcher_on_finish(voiceChannel));
 		})
 		.catch(err => console.log(err))
 	isReady = true
